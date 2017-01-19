@@ -112,7 +112,7 @@ openssl genrsa 2048 > private_key.pem
 ```
 3) Creating client certificate
 ```javascript
-openssl req -new -key private-key.pem -out csr.pem
+openssl req -new -key private_key.pem -out csr.pem
 ```
 This command will need you to answer few questions here, this process is interactive. The fields to answer will be to add Country Name, State or Province, Locality or City, Company, Organizational Unit, Common Name, email, password, company name and few extra attributes. Remember the answers you provide here.
 ```javascript
