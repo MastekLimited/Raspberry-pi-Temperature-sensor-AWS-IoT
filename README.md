@@ -452,27 +452,27 @@ For this, LIRC-Linux Infrared Remote Control packages will be used,  allows to e
 
 Step 1: Install Lirc on raspberry pi, I found easy way to do so [here](http://alexba.in/blog/2013/01/06/setting-up-lirc-on-the-raspberrypi/)
 
-Step 2: Use IR reciever to record remotes ir signals, the recorded signals can be seen in lircd.conf file generated. There few steps to follow, which I found [here](http://www.instructables.com/id/How-To-Useemulate-remotes-with-Arduino-and-Raspber/?ALLSTEPS), follow from step 8. all circuits used here are followed through above tutorial, 
-
-We are trying to capture and emulate remote signals to control Panasonic TV device,
-
 ```javascript
 sudo apt-get update
 sudo apt-get upgrade
 sudo rpi-update
 sudo reboot
  ``` 
- 
+
+We are trying to capture and emulate remote signals to control Panasonic TV device,
 ```javascript
 sudo apt-get install lirc
 sudo apt-get install liblircclient-dev
 sudo apt-get install lirc-x
  ``` 
- liblircclient-dev is a infra-red remote control support - client library development files.
- 
- update /etc/modules file
- 
- ```javascript
+liblircclient-dev is a infra-red remote control support - client library development files which is necessary for running 'irw' command.
+
+lirc-x, package provides X utilities for LIRC, irxevent: allows controlling X applications with a remote control;
+
+Step 2: Use IR reciever to record remotes ir signals, the recorded signals can be seen in lircd.conf file generated. There few steps to follow, which I found [here](http://www.instructables.com/id/How-To-Useemulate-remotes-with-Arduino-and-Raspber/?ALLSTEPS), follow from step 8. all circuits used here are followed through above tutorial, 
+
+update /etc/modules file
+```javascript
 lirc_dev
 lirc_rpi gpio_in_pin=23 gpio_out_pin=22
  ``` 
