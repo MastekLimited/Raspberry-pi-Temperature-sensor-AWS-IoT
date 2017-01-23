@@ -444,7 +444,7 @@ Experiment complete :+1:
 
 ## Activity 3
 
-Sending signal/message back from internet to raspberry pi to carry on a event.
+Capturing/recording signal from IR reciever to raspberry pi.
 
 Usecase: To read and emulate remotes IR (infrared) signals to control HVAC (Heating, Ventilation and Air Conditioning) devices or any other electronic devices like TV's and etc.
 
@@ -452,10 +452,117 @@ For this, LIRC-Linux Infrared Remote Control packages will be used,  allows to e
 
 Step 1: Install Lirc on raspberry pi, I found easy way to do so [here](http://alexba.in/blog/2013/01/06/setting-up-lirc-on-the-raspberrypi/)
 
-Step 2: Use IR reciever to record remotes ir signals, the recorded signals can be seen in lircd.conf file generated. There few steps to follow, which I found [here](http://www.instructables.com/id/How-To-Useemulate-remotes-with-Arduino-and-Raspber/?ALLSTEPS), follow from step 8.
+Step 2: Use IR reciever to record remotes ir signals, the recorded signals can be seen in lircd.conf file generated. There few steps to follow, which I found [here](http://www.instructables.com/id/How-To-Useemulate-remotes-with-Arduino-and-Raspber/?ALLSTEPS), follow from step 8. all circuits used here are followed through above tutorial, 
+
+We are trying to capture and emulate remote signals to control Panasonic TV device,
+
+```javascript
+sudo apt-get update
+sudo apt-get upgrade
+sudo rpi-update
+sudo reboot
+ ``` 
+ 
+```javascript
+sudo apt-get install lirc
+sudo apt-get install liblircclient-dev
+sudo apt-get install lirc-x
+ ``` 
+ liblircclient-dev is a infra-red remote control support - client library development files.
+ 
+ update /etc/modules file
+ 
+ ```javascript
+lirc_dev
+lirc_rpi gpio_in_pin=23 gpio_out_pin=22
+ ``` 
+ 
+ Update /etc/lirc/hardware.conf file
+ ```javascript
+LIRCD_ARGS="--uinput"
+DRIVER="default"
+DEVICE="/dev/lirc0"
+MODULES="lirc_rpi"
+ ``` 
+ 
+ Reboot, so rpi can fetech latest updates.
+ 
+ update sudo nano /boot/config.txt
+```javascript
+dtoverlay=lirc-rpi,gpio_in_pin=23,gpio_out_pin=22,gpio_in_pull=up
+ ``` 
+ 
+Now, for recording IR signals, you need to first stop the LIRC daemon.
+```javascript
+sudo /etc/init.d/lirc stop
+ ``` 
+ Or
+ ```javascript
+sudo systemctl stop lirc
+sudo systemctl status lirc
+ ``` 
+To analyse the IR signal timings.
+```javascript
+mode2 -d /dev/lirc0
+``` 
+run above command, point your remote to IR receiver and press buttons, you will see pulse/space values for these buttons.
+
+Now, check list of allowed button names for lirc remotes,
+```javascript
+irrecord --list-namespace
+ ``` 
+ 
+ To record IR signals for each remote button,
+ ```javascript
+Sudo irrecord –driver=devinput -d /dev/lirc0 ~/lircd.conf
+ ``` 
+
+using this command we can give names to buttons e.g. KEY_VOLUMEUP and KEY_VOLUMEDOWN, the generated button names and their associated hexcodes can be viewed in lircd.conf file. Copy this file to /etc/lirc folder.
+```javascript
+sudo cp lircd.conf /etc/lirc/lircd.conf
+``` 
+
+Let's check whether the codes for buttons are recorded correctly, start the LIRC daemon
+```javascript
+sudo systemctl start lirc
+sudo systemctl status lirc
+ ```
+ 
+To get the button's assigned name whenever you press that remote button
+ ```javascript
+irw
+```
+
+now create a file lircrc and store it at /home/pi/.lircrc and /etc/lirc/lirc/lircrc
+ ```javascript
+begin
+button=KEY_VOLUMEUP
+prog=irexec
+repeat=0
+config=/etc/lirc/lircd.conf
+end
+
+begin
+button=KEY_VOLUMEDOWN
+prog=irexec
+repeat=0
+config=/etc/lirc/lircd.conf
+end
+```
+
+To check whether the assign names are set in lircd.conf file
+```javascript
+irsend LIST panasonicTV “”
+```
+the output shows hexcode and keyname assigned fron lircd.conf file.
 
 Once the signals are recorded we use them to control electronic device from our raspberry pi.
 
 ## Activity 4
 
-Transmit the IR code through IR transmitter with Raspberry Pi 2 to device compatible like A.C.
+Transmit the IR code through IR transmitter with Raspberry Pi 2 to device compatible like TV.
+To send IR signal for one of the recorded buttons using LIRC, run irsend command, point your transmitter towards TV
+```javascript
+irsend SEND_ONCE -d /var/run/lirc/lircd panasonicTV KEY_VOLUMEUP
+irsend SEND_ONCE -d /var/run/lirc/lircd panasonicTV KEY_VOLUMEDOWN
+```
