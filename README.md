@@ -446,7 +446,7 @@ Experiment complete :+1:
 
 Sending signal/message back from internet to raspberry pi to carry on a event.
 
-Usecase: To read and emulate remotes IR (infrared) signals to control HVAC applications or other electronic devices like TV's and etc.
+Usecase: To read and emulate remotes IR (infrared) signals to control HVAC (Heating, Ventilation and Air Conditioning) devices or any other electronic devices like TV's and etc.
 
 For this, LIRC-Linux Infrared Remote Control packages will be used,  allows to encode-decode, recieve, store and send infrared signals of many commonly used remote controls.
 
