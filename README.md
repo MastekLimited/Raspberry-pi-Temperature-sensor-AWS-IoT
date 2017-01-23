@@ -444,7 +444,17 @@ Experiment complete :+1:
 
 ## Activity 3
 
-Send signal/message back from internet to raspberry pi to carry on a event.
+Sending signal/message back from internet to raspberry pi to carry on a event.
+
+Usecase: To read and emulate remotes IR (infrared) signals to control HVAC applications or other electronic devices like TV's and etc.
+
+For this, LIRC-Linux Infrared Remote Control packages will be used,  allows to encode-decode, recieve, store and send infrared signals of many commonly used remote controls.
+
+Step 1: Install Lirc on raspberry pi, I found easy way to do so [here](http://alexba.in/blog/2013/01/06/setting-up-lirc-on-the-raspberrypi/)
+
+Step 2: Use IR reciever to record remotes ir signals, the recorded signals can be seen in lircd.conf file generated. There few steps to follow, which I found [here](http://www.instructables.com/id/How-To-Useemulate-remotes-with-Arduino-and-Raspber/?ALLSTEPS), follow from step 8.
+
+Once the signals are recorded we use them to control electronic device from our raspberry pi.
 
 ## Activity 4
 
