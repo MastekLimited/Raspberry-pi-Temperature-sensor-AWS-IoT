@@ -123,9 +123,16 @@ The client certificate generated will be certificate.pem file.
 aws iot describe-certificate --certificate-id <your_certificate_id>
 ```
 Now, you have ca.pem.crt, private_key.pem, certificate.pem and csr.pem certificates for IoT devices to establish a secure connection to AWS IoT.
+We need to set these certificates as ACTIVE explicitly.
+```javascript
+aws iot update-certificate --new-status ACTIVE --certificate-id <your_certificate_id>
+```
 
 * Create a 'thing'
-
+```javascript
+aws iot create-thing --thing-name temperature-1
+```
+here name given to our aws iot thing is 'temperature-1', we can see all things created in AWS IoT console online.
 A ‘thing’ is a client device connected to AWS IoT and all these devices can be found in AWS IoT a thing registry.
 Create a thing for experiment, name it anything you like, here (the thing) named ‘temperature-1’.
 Execute this command and you will see a ‘thingArn’ and ‘thingName’ on screen, this means that a thing is created and you can check it on AWS IoT console.
@@ -186,7 +193,7 @@ Using AWS CLI,
 aws dynamodb create-table --table-name IOT-TempData --attribute-definitions AttributeName=key, AttributeType=S AttributeName=timestamp,AttributeType=S --key-schema AttributeName=key, KeyType=HASH AttributeName=timestamp,KeyType=RANGE --provisioned-throughput ReadCapacityUnits=1, WriteCapacityUnits=1
 ```
 On success, the TableDescription will be displayed and make a note of TableArn generated.
-Now, we need previously created AWS IAM account, AWS IoT will assume your IAM role to process and place messages in DynamoDB.
+Now, we need previously created AWS IAM account, AWS IoT will assume your IAM role to process and place messages in DB.
 
 1) Create actions role
 Make file iot-tempdata-actions-role.txt and add,
@@ -235,7 +242,7 @@ Note: The arn mentioned in Resource above is the TableArn generated while creati
  aws iam create-policy --policy-name "iot-tempdata-ddb-insert-policy" --policy-document file://iot-tempdata-ddb-insert-policy.txt
 ```
 ```javascript
- aws iam attach-role-policy --role-name "iot-tempdata-actions-role" --policy-arn "arn:aws:iam::123456789101:policy/iot- tempdata -ddb-insert-policy"
+ aws iam attach-role-policy --role-name "iot-tempdata-actions-role" --policy-arn "arn:aws:iam::123456789101:policy/iot-tempdata-ddb-insert-policy"
 ```
 2) Create a Topic Rule
 Amazon web services allow to describe specific actions to be performed based on AWS IoT topic strings received from client devices. These messages are parsed through MQTT topic strings, 
@@ -340,7 +347,7 @@ Here we will create a rule, that will send sms to your mobile device when the te
 
 Create SNS topic
 ```javascript
-aws sns create-topic --name iot-hivedata-inside-temperature
+aws sns create-topic --name iot-tempdata-inside-temperature
  ```
  Create policy to publish this SNS topic and attach to iot-tempdata-actions-role created earlier.
 Make file iot-hivedata-publish-sns-policy.txt and add,
@@ -357,10 +364,10 @@ Make file iot-hivedata-publish-sns-policy.txt and add,
 
  ```
 ```javascript
-aws iam create-policy --policy-name "iot-hivedata-publish-sns-policy" --policy-document file://iot-hivedata-publish-sns-policy.txt
+aws iam create-policy --policy-name "iot-tempdata-publish-sns-policy" --policy-document file://iot-hivedata-publish-sns-policy.txt
  ```
 ```javascript
-aws iam attach-role-policy --role-name "iot-hivedata-actions-role" --policy-arn "arn:aws:iam::123456789012:policy/iot-hivedata-publish-sns-policy"
+aws iam attach-role-policy --role-name "iot-tempdata-actions-role" --policy-arn "arn:aws:iam::123456789012:policy/iot-hivedata-publish-sns-policy"
  ```
  Create a rule that publishes to this topic when temperature goes below 24 degrees Celsius
 Make file iot-tempdata-topic-sns-templessthan24-rule.txt and add,
@@ -385,6 +392,11 @@ Make file iot-tempdata-topic-sns-templessthan24-rule.txt and add,
  Now we have all generated and attached policies and rules.
 To publish our SNS topic to endpoint SMS enabled mobile device
 For detailed steps, check  [here](http://docs.aws.amazon.com/iot/latest/developerguide/config-and-test-rules.html)
+
+Above we have created a topic and have attached policies and rule to it, these can be viewed in AWS SNS console online, on console
+click on topic created, from Actions tab select 'Subscribe to Topic' add SMS service and your mobile number in this format 91-000-000-0000 and add service. 
+
+There is also a way to add all sns actions through AWS SNS console directly (i.e. without commandline), the steps are as follows,
 
 Go to AWS SNS console, you will notice iot-tempdata-temperature topic (created earlier) on console
 
