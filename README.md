@@ -514,7 +514,7 @@ irrecord --list-namespace
  
  To record IR signals for each remote button,
  ```javascript
-Sudo irrecord –driver=devinput -d /dev/lirc0 ~/lircd.conf
+Sudo irrecord -–driver=devinput --driver=/dev/lirc0 ~/lircd.conf
  ``` 
 
 using this command we can give names to buttons e.g. KEY_VOLUMEUP and KEY_VOLUMEDOWN, the generated button names and their associated hexcodes can be viewed in lircd.conf file. Copy this file to /etc/lirc folder.
@@ -527,6 +527,8 @@ Let's check whether the codes for buttons are recorded correctly, start the LIRC
 sudo systemctl start lirc
 sudo systemctl status lirc
  ```
+ 
+ --------------------------------BELOW COMMANDS ARE NOT SUCCESSFULLY RUNNING AS OF NOW--------------------------------------------------
  
 To get the button's assigned name whenever you press that remote button
  ```javascript
