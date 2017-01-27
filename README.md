@@ -501,6 +501,10 @@ sudo /etc/init.d/lirc stop
 sudo systemctl stop lirc
 sudo systemctl status lirc
  ``` 
+ 
+ Make IR receiver circuit for capturing TV, AC or anyother electronic device remote
+ ![Alt text](https://github.com/MastekLtd/Raspberry-pi-Temperature-sensor-AWS-IoT/blob/master/ir_receiver_circuit.PNG ":")
+ 
 To analyse the IR signal timings.
 ```javascript
 mode2 -d /dev/lirc0
