@@ -502,8 +502,10 @@ sudo systemctl stop lirc
 sudo systemctl status lirc
  ``` 
  
- Make IR receiver circuit for capturing TV, AC or anyother electronic device remote
+ Make IR receiver (TSOP1738) circuit for capturing TV, AC or anyother electronic device remote
  ![Alt text](https://github.com/MastekLtd/Raspberry-pi-Temperature-sensor-AWS-IoT/blob/master/ir_receiver_circuit.PNG ":")
+ 
+here, connect ground pin of receiver to (ground) pin 6 of raspberry pi, connect vcc pin of receiver to (power) pin 2 of raspberry pi, connect signal/output pin of receiver to gpio pin 23 (gpio_in_pin) of raspberry pi.
  
 To analyse the IR signal timings.
 ```javascript
