@@ -610,3 +610,6 @@ while True:
 ``` 
 
 when sensor detects the motion, led starts blinking.
+
+Reference:
+https://diyhacking.com/raspberry-pi-gpio-control/
