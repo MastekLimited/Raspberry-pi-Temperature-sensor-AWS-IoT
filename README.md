@@ -574,3 +574,39 @@ To send IR signal for one of the recorded buttons using LIRC, run irsend command
 irsend SEND_ONCE -d /var/run/lirc/lircd panasonicTV KEY_VOLUMEUP
 irsend SEND_ONCE -d /var/run/lirc/lircd panasonicTV KEY_VOLUMEDOWN
 ```
+
+-------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------
+## ADD-ONs
+
+Using PIR-motion sensor with python.
+
+To detect intrusion, we are using a standard PIR-motion sensor connected to raspberry pi,
+
+Circuit design, 
+![Alt text](https://github.com/MastekLtd/Raspberry-pi-Temperature-sensor-AWS-IoT/blob/master/pir_motion_sensor_circuit.jpg ":")
+
+connect ground pin of sensor to pin 6 of raspberry pi, vcc of sensor to pin 2 of raspberry pi, out of sensor to pin 11 of raspberry pi,
+attach a led to circuit, connect positive pin of led to resistor (prefrably 220 ohms), and connect the resistors other end to pin 3 of raspberry pi.
+
+Run the follow python code,
+```javascript
+import RPi.GPIO as GPIO
+import time
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(11, GPIO.IN)         
+GPIO.setup(3, GPIO.OUT)         
+while True:
+       i=GPIO.input(11)
+       if i==0:                 
+             print "No motion detected",i
+             GPIO.output(3, 0)  
+             time.sleep(0.1)
+       elif i==1:               
+             print "Motion detected",i
+             GPIO.output(3, 1)  
+             time.sleep(0.1)
+``` 
+
+when sensor detects the motion, led starts blinking.
